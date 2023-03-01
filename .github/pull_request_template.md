@@ -5,7 +5,7 @@ A quick, [ideally] one- or two-paragraph summary of the feature, bug fix, etc.
 # Resources #
 
 Add links for Func Specs pages, Invision, Jira tickets,  and other documentation
-* [SEL-](https://simwinsports.atlassian.net/browse/SEL-)
+* [SGH-](https://iversoft.atlassian.net/browse/SGH-)
 
 # Technical Considerations #
 
