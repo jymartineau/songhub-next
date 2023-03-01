@@ -12,7 +12,7 @@ import { format } from 'path'
 // const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const {user} = useUser();
+  const {user, checkSession} = useUser();
   return (
     <>
       <Head>
@@ -23,7 +23,6 @@ export default function Home() {
       </Head>
       <main>
         <div className='flex justify-center items-center flex-col h-screen'>
-         
          
           {
             user ? (<>
