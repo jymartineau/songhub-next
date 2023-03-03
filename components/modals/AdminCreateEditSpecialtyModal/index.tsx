@@ -5,19 +5,34 @@ import { MoonLoader } from 'react-spinners';
 import * as Yup from 'yup';
 import Modal from '../Modal';
 
+export const getSpecialtyValidationSchema = () => {
+  return Yup.object().shape({
+    id: Yup.string(),
+    name: Yup.string().required('Name is required'),
+    description: Yup.string().required('Description is required'),
+  });
+};
+
 const AdminCreateEditSpecialtyModal = () => {
   const { modalProps, closeModal } = useRootStore();
   const specialty: any = modalProps.specialty;
   const initialValues = {
+    id: undefined,
     name: '',
     description: '',
   };
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    description: Yup.string().required('Description is required'),
-  });
+  const validationSchema = getSpecialtyValidationSchema();
   async function onSubmit(fields: any) {
     console.log('fields', fields);
+    const { id, name, description } = fields;
+    if (id === undefined) {
+      await fetch('/api/specialty', {
+        method: 'POST',
+        body: JSON.stringify({ name, description }),
+      })
+        .then((res) => res.json())
+        .catch((err) => console.error(err));
+    }
     closeModal();
   }
   return (
@@ -54,7 +69,10 @@ const AdminCreateEditSpecialtyModal = () => {
                   </div>
                 </div>
                 <div className='flex w-full items-center space-x-4 py-2'>
-                  <label htmlFor='description' className='w-60 text-right font-bold'>
+                  <label
+                    htmlFor='description'
+                    className='w-60 text-right font-bold'
+                  >
                     Description
                   </label>
                   <div className='flex w-full flex-1 flex-col'>
@@ -71,16 +89,18 @@ const AdminCreateEditSpecialtyModal = () => {
                     />
                   </div>
                 </div>
-                <div className="flex justify-center py-2">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="btn-primary flex items-center justify-center space-x-4 w-40"
-                    >
-                      <span>{specialty ? 'Save' : 'Create'}</span>
-                      {isSubmitting && <MoonLoader color={'#fff'} loading={true} size={20} />}
-                    </button>
-                  </div>
+                <div className='flex justify-center py-2'>
+                  <button
+                    type='submit'
+                    disabled={isSubmitting}
+                    className='btn-primary flex w-40 items-center justify-center space-x-4'
+                  >
+                    <span>{specialty ? 'Save' : 'Create'}</span>
+                    {isSubmitting && (
+                      <MoonLoader color={'#fff'} loading={true} size={20} />
+                    )}
+                  </button>
+                </div>
               </form>
             );
           }}
