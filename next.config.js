@@ -12,14 +12,13 @@ const nextConfig = {
         pathname: '/id/**',
       },
     ],
+    domains: [ 'lh3.googleusercontent.com', 'picsum.photos']
   },
   // NOTE: If we want Sass Support
   // sassOptions: {
   //   includePaths: [path.join(__dirname, 'styles')],
   // },
-  images: {
-    domains: [ 'lh3.googleusercontent.com']
-  }
+
 }
 
 module.exports = nextConfig

@@ -35,7 +35,7 @@ function UserWatcher() {
     if (user && router) {
       // @ts-ignore
       !user.app_metadata || (user.app_metadata && user.app_metadata.isOnboarded === false)
-        router.push('/onboard')
+        // router.push('/onboard')
     }
   
 
