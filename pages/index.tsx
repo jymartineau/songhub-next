@@ -8,11 +8,11 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { format } from 'path'
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 // const inter = Inter({ subsets: ['latin'] })
-
-export default function Home() {
-  const {user} = useUser();
+export default function Home()  {
+  const {user, checkSession} = useUser();
   return (
     <>
       <Head>
@@ -23,7 +23,6 @@ export default function Home() {
       </Head>
       <main>
         <div className='flex justify-center items-center flex-col h-screen'>
-         
          
           {
             user ? (<>
@@ -42,3 +41,6 @@ export default function Home() {
     </>
   )
 }
+
+// Bug in current 
+export const getServerSideProps = withPageAuthRequired();
