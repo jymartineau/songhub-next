@@ -2,6 +2,7 @@ import { useRootStore } from '@/providers/RootStoreProvider';
 import { ErrorMessage, Field, Formik } from 'formik';
 import React from 'react';
 import { MoonLoader } from 'react-spinners';
+import { useSWRConfig } from 'swr';
 import * as Yup from 'yup';
 import Modal from '../Modal';
 
@@ -13,9 +14,11 @@ export const getSpecialtyValidationSchema = () => {
   });
 };
 
-const AdminCreateEditSpecialtyModal = () => {
+const AdminCreateEditSpecialtyCategoryModal = () => {
+  const { mutate } = useSWRConfig();
   const { modalProps, closeModal } = useRootStore();
   const specialty: any = modalProps.specialty;
+  const target: string = modalProps.target;
   const initialValues = {
     id: undefined,
     name: '',
@@ -23,23 +26,32 @@ const AdminCreateEditSpecialtyModal = () => {
   };
   const validationSchema = getSpecialtyValidationSchema();
   async function onSubmit(fields: any) {
-    console.log('fields', fields);
-    const { id, name, description } = fields;
-    if (id === undefined) {
-      await fetch('/api/specialty', {
-        method: 'POST',
-        body: JSON.stringify({ name, description }),
-      })
-        .then((res) => res.json())
-        .catch((err) => console.error(err));
+    const entity = target === 'specialty' ? 'specialties' : 'categories';
+    const { _id } = fields;
+    let method, url;
+    if (_id === undefined) {
+      url = `/api/${entity}`;
+      method = 'POST';
     }
+    else {
+      url = `/api/${entity}/${_id}`;
+      method = 'PUT';
+    }
+
+    await fetch(url, {
+      method: method,
+      body: JSON.stringify(fields),
+    })
+      .then((res) => res.json())
+      .catch((err) => console.error(err));
+    mutate(`/api/${entity}`);
     closeModal();
   }
   return (
     <Modal>
       <section className='h-[640px] w-[1080px] divide-y overflow-y-scroll'>
         <h2 className='text-2xl font-bold'>
-          {specialty ? 'Edit' : 'Create'} specialty
+          {specialty ? 'Edit' : 'Create'} {target}
         </h2>
         <hr />
         <Formik
@@ -110,4 +122,4 @@ const AdminCreateEditSpecialtyModal = () => {
   );
 };
 
-export default AdminCreateEditSpecialtyModal;
+export default AdminCreateEditSpecialtyCategoryModal;
