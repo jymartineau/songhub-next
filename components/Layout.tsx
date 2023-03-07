@@ -1,11 +1,16 @@
 import React from 'react'
 import UserWatcher from './UserWatcher'
+import Navigation from './Navigation'
 
 function Layout({children}:{children?:React.ReactNode}) {
   return (
-    <div>
-        <UserWatcher />
-        {children}</div>
+    <>
+    <UserWatcher />
+    <Navigation>
+      {children}
+    </Navigation>
+    </>
+   
   )
 }
 
