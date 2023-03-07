@@ -49,7 +49,7 @@ const AdminCreateEditSpecialtyCategoryModal = () => {
   }
   return (
     <Modal>
-      <section className='h-[640px] w-[1080px] divide-y overflow-y-scroll'>
+      <section className='h-[640px] w-[360px] md:w-[640px] xl:w-[1080px] divide-y overflow-y-scroll'>
         <h2 className='text-2xl font-bold'>
           {specialty ? 'Edit' : 'Create'} {target}
         </h2>
@@ -63,15 +63,16 @@ const AdminCreateEditSpecialtyCategoryModal = () => {
           {({ handleSubmit, isSubmitting }) => {
             return (
               <form onSubmit={handleSubmit} className='pt-4'>
-                <div className='flex w-full items-center space-x-4 py-2'>
-                  <label htmlFor='name' className='w-60 text-right font-bold'>
+                <div className='flex flex-col lg:flex-row w-full items-center lg:space-x-4 py-2'>
+                  <label htmlFor='name' className='w-60 hidden lg:block text-right font-bold'>
                     Name
                   </label>
                   <div className='flex w-full flex-1 flex-col'>
                     <Field
                       name='name'
                       type='text'
-                      className='w-full rounded border p-1'
+                      className='rounded border p-1'
+                      placeholder="Name"
                     />
                     <ErrorMessage
                       name='name'
@@ -80,10 +81,10 @@ const AdminCreateEditSpecialtyCategoryModal = () => {
                     />
                   </div>
                 </div>
-                <div className='flex w-full items-center space-x-4 py-2'>
+                <div className='flex w-full items-center lg:space-x-4 py-2'>
                   <label
                     htmlFor='description'
-                    className='w-60 text-right font-bold'
+                    className='w-60 text-right font-bold hidden lg:block'
                   >
                     Description
                   </label>
@@ -93,6 +94,7 @@ const AdminCreateEditSpecialtyCategoryModal = () => {
                       as='textarea'
                       rows='5'
                       className='w-full rounded border p-1'
+                      placeholder="Description"
                     />
                     <ErrorMessage
                       name='description'
