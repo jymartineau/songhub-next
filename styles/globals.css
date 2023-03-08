@@ -9,6 +9,9 @@
   .form-element {
     @apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500;
   }
+  .btn-primary {
+    @apply rounded bg-blue-600 px-4 py-2 text-white;
+  }
 }
 
 :root {
@@ -100,12 +103,12 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
 }
 
 a {
