@@ -18,7 +18,7 @@ export default function MediaUpload({
     value: any,
     shouldValidate?: boolean | undefined
   ) => Promise<void> | Promise<FormikErrors<any>>;
-  cleanup: boolean;
+  cleanup?: boolean;
   existingFile: UploadedFile | undefined;
 }) {
   const [file, setFile] = useState<UploadedFile>();

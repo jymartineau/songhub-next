@@ -11,9 +11,10 @@ import Group from "./Form/Group";
 import Text from '@/components/Forms/Form/Text'
 import UploadDropzone from "../MediaUpload/ImageDropZone";
 import StemUploadModal from "../MediaUpload/StemUploadModal";
-import { Split } from "@/types";
+import { Collaborator, StemUpload } from "@/types";
 import SplitsCalculator from '@/components/Splits/SplitsCalculator'
 import { XCircleIcon } from "@heroicons/react/24/outline";
+import AddCollaboratorModal from '@/components/Forms/AddCollaboratorModal';
 
 const STATUS_OPTIONS = ["DRAFT", "PUBLISHED", "ARCHIVED"]
 
@@ -25,6 +26,9 @@ const TEST_workTypeS = [{ id: 0, workType: "Original Composition" }, { id: 1, wo
 const ProjectForm = () => {
 
     const [openStemsModal, setOpenStemsModal] = useState<boolean>(false);
+    const [openCollabModal, setOpenCollabModal] = useState<boolean>(false);
+    const [stemDetails, setStemDetails] = useState<StemUpload | undefined>(undefined);
+    const [collaboratorDetails, setCollaboratorDetails] = useState<Collaborator | undefined>(undefined);
 
     const formik = useFormik({
         initialValues: {
@@ -40,8 +44,8 @@ const ProjectForm = () => {
             hrs: 0,
             mins: 0,
             secs: 0,
-            stemUploads: [] as string[],
-            splits: [] as Split[],
+            stemUploads: [] as StemUpload[],
+            splits: [] as Collaborator[],
             artwork: undefined,
             ISWC: "",
             ISRC: "",
@@ -62,14 +66,33 @@ const ProjectForm = () => {
     })
 
     useEffect(() => {
-    console.log(formik.values);
-}, [formik, formik.values])
+        console.log(formik.values);
+    }, [formik, formik.values])
 
     const handleAltTitleRemove = (i: number) => {
         // Create Shallow Copy
         let currentTitles = [...formik.values.workTitleAlts];
         currentTitles.splice(i, 1)
         formik.setFieldValue("workTitleAlts", currentTitles)
+    }
+
+    const handleAddStem = async (stem: StemUpload) => {
+        let currentStems = formik.values.stemUploads
+        await formik.setFieldValue("stemUploads", [...currentStems, stem ])
+    }
+
+    const handleAltTitleAdd = (e:any) => {
+        e.preventDefault();
+        let currentList = formik.values.workTitleAlts
+        formik.setFieldValue("workTitleAlts", [...currentList, formik.values.currentWorkAltTitle]).then(() => {
+            formik.setFieldValue("currentWorkAltTitle", "");
+        });
+
+    }
+
+    const handleCollaboratorAdd = (writer:Collaborator) => {
+        let currentSplits = formik.values.splits;
+        formik.setFieldValue("splits", [...currentSplits, writer])
     }
 
     return (
@@ -109,15 +132,13 @@ const ProjectForm = () => {
                             <div className="flex flex-row">
                                 <input type="text" placeholder="Add Alt Title.."
                                     {...formik.getFieldProps("currentWorkAltTitle")}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleAltTitleAdd(e)
+                                        }
+                                    }}
                                 />
-                                <button className="w-20 bg-blue-500" type="button" onClick={(e) => {
-                                    e.preventDefault();
-                                    let currentList = formik.values.workTitleAlts
-                                    formik.setFieldValue("workTitleAlts", [...currentList, formik.values.currentWorkAltTitle]).then(() => {
-                                        formik.setFieldValue("currentWorkAltTitle", "");
-                                    });
-
-                                }}>Add</button>
+                                <button className="w-20 bg-blue-500" type="button" onClick={handleAltTitleAdd}>Add</button>
                             </div>
                             <div className=" min-h-[50px] mt-2 px-2 bg-slate-700">
                                 <Group title="Alt Title List">
@@ -161,9 +182,9 @@ const ProjectForm = () => {
                         <div className="">
                             <Group title="CPC">
                                 <div className="flex gap-4 px-2 items-center">
-                                    <input type="checkbox" value={1} className="w-4  h-4" name="CPC" onChange={(e)=> {
+                                    <input type="checkbox" value={1} className="w-4  h-4" name="CPC" onChange={(e) => {
                                         formik.setFieldValue('CPC', e.target.checked)
-                                    }}/>
+                                    }} />
                                     <p className="text-xs max-w-[300px] font-semibold">
                                         This Work Include Copyright Protected Content Other Than Your Own? i.e. Sampling, Translation
                                     </p>
@@ -220,19 +241,19 @@ const ProjectForm = () => {
                 <div className="flex flex-col gap-4">
                     <Group title="Project Stems">
                         <div className="flex flex-col gap-2">
-                            {
-                                [{ label: "Guitar Stems", url: "https://freepd.com/music/3%20am%20West%20End.mp3" }].map((m, i) => (
+                            {formik.values.stemUploads.length > 0 ? (<>{formik.values.stemUploads.map((s, i) => (
 
-                                    <div className="flex items-center" key={`${m.label}-${i}`}>
-                                        <p className="whitespace-none w-1/4 text-lg">{m.label}</p>
-                                        <div className="w-3/4">
-                                            <AudioPlayer src={m.url} className="!bg-[#333] !border !rounded-md border-gray-700" showSkipControls={false} showJumpControls={true} customAdditionalControls={[]} layout="horizontal-reverse" />
-
-                                        </div>
+                                <div className="flex items-center" key={`${s.title}-${i}`}>
+                                    <p className="whitespace-none w-1/4 text-lg">{s.title}</p>
+                                    <div className="w-3/4">
+                                        <AudioPlayer src={s.fileURL} className="!bg-[#333] !border !rounded-md border-gray-700" showSkipControls={false} showJumpControls={true} customAdditionalControls={[]} layout="horizontal-reverse" />
 
                                     </div>
 
-                                ))
+                                </div>
+
+                            ))}</>) : (<></>)
+
                             }
 
 
@@ -244,7 +265,10 @@ const ProjectForm = () => {
                     </Group>
                 </div>
                 <Group title="Splits">
-                    <SplitsCalculator splits={formik.values.splits} setSplits={() => { }} />
+                    
+                    <SplitsCalculator splits={formik.values.splits} setFieldValue={formik.setFieldValue} />
+                    <button type="button" className='w-full uppercase text-lg bg-gray-700 py-2 rounded-md' onClick={() => {setOpenCollabModal(true)}}>+ Add Collaborator</button>
+
                 </Group>
 
 
@@ -264,7 +288,8 @@ const ProjectForm = () => {
 
 
             </form>
-            <StemUploadModal open={openStemsModal} setOpen={setOpenStemsModal} />
+            <StemUploadModal open={openStemsModal} setOpen={setOpenStemsModal} handleAdd={handleAddStem} />
+            <AddCollaboratorModal open={openCollabModal}  setOpen={setOpenCollabModal} handleAdd={handleCollaboratorAdd} />
         </>
     );
 };

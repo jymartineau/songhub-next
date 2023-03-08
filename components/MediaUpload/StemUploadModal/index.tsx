@@ -5,8 +5,10 @@ import Group from '@/components/Forms/Form/Group'
 import { useFormik } from 'formik'
 import * as Yup from "yup";
 import AudioDropZone from '@/components/MediaUpload/AudioDropZone'
+import { StemUpload, UploadedFile } from '@/types'
 
-export default function Modal({open, setOpen, handleAdd}:{open:boolean, setOpen: Dispatch<SetStateAction<boolean>>, handleAdd:() => void}) {
+// eslint-disable-next-line no-unused-vars
+export default function Modal({open, setOpen, handleAdd}:{open:boolean, setOpen: Dispatch<SetStateAction<boolean>>, handleAdd:(stem:StemUpload) => void}) {
 
   const formik = useFormik(
     {
@@ -16,16 +18,34 @@ export default function Modal({open, setOpen, handleAdd}:{open:boolean, setOpen:
        desc:"",
        fileURL:"",
        file:undefined,
-       created:"",
+       created:0,
        daw:""
       },
-      onSubmit: (v) => {
+      onSubmit: async (v) => {
+        console.log('submitting Stem')
         console.log(v)
-        handleAdd()
+        let {file, ...values} = {...v};
+        if (file) {
+          let fileCasted = file as unknown as UploadedFile
+          let {type:audio, lastModified:created} = fileCasted
+            values.audio = audio;
+            values.created = created;
+        }
+      
+      // temp should be replaced with AWS file Upload
+      values.fileURL = "https://freepd.com/music/3%20am%20West%20End.mp3"
+      
+      await handleAdd(values)
+
+      setOpen(false);
+
+      
       },
       validationSchema: Yup.object().shape({title: Yup.string().required('Title is required').max(50, 'Max title length is 50'),})
     }
   )
+
+  
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10 flex justify-center items-center" onClose={setOpen}>
@@ -68,22 +88,21 @@ export default function Modal({open, setOpen, handleAdd}:{open:boolean, setOpen:
             <div className='p-2'>
               <Group title='select a file'>
 
-               <AudioDropZone setFieldValue={formik.setFieldValue} existingFile={formik.values.file} cleanup={false}/>
+               <AudioDropZone setFieldValue={formik.setFieldValue} existingFile={formik.values.file}/>
               </Group>
 
-              <hr className=" py-1" />
+              <hr className="py-1" />
 
               <Group title='title'>
                 <input
                 type='text'
-                  name="title"
                   placeholder="Enter a title..."
-                  
+                  {...formik.getFieldProps('title')}
                 />
               </Group>
                 <Group title='description'>
                 <textarea
-                  name="description"
+                  {...formik.getFieldProps('description')}
                   placeholder="Enter a description..."
                   className='px-2'
                 />
@@ -96,9 +115,13 @@ export default function Modal({open, setOpen, handleAdd}:{open:boolean, setOpen:
             <div className='w-full flex items-center justify-center px-2'>
               <button
                 type="button"
-                className="uppercase w-full bg-gray-600 py-2 rounded-lg"
+                className="uppercase w-full bg-gray-600 py-2 rounded-lg hover:bg-gray-700"
+                onClick={() => {
+                  console.log('button clicked')
+                  formik.handleSubmit()
+                }}
               >
-                <p className='text-center'>Upload</p>
+                Upload
               </button>
             </div>
           </div>
