@@ -27,22 +27,14 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
   const { user, isLoading } = useUser();
   const router = useRouter();
   if (isLoading) {
-    <div>
+    return(<div>
       <PulseLoader color={'#037ae0'} loading={true} size={15} />
-    </div>
+    </div>)
   }
 
   if (user && !isLoading) {
     return (
       <>
-        {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
         <div>
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog as="div" className="relative z-40 lg:hidden" onClose={setSidebarOpen}>
@@ -144,7 +136,6 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
               </div>
             </Dialog>
           </Transition.Root>
-
           {/* Static sidebar for desktop */}
           <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
@@ -183,7 +174,6 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
                         src={user?.picture as string}
                         alt=""
                         fill
-
                       />
                     </div>
                     <div className="ml-3">
@@ -192,7 +182,6 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
                         !isLoading && user && (<Link href='/api/auth/logout'><p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">Log Out</p></Link>
                         )
                       }
-
                     </div>
                   </div>
                 </a>
@@ -210,7 +199,7 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
                 <Bars3Icon className="h-8 w-8" aria-hidden="true" />
               </button>
             </div>
-            <main className="flex-1">
+            <main className="flex-1 bg-gray-900 h-full">
               {children}
             </main>
           </div>
@@ -219,5 +208,5 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
     )
   }
 
-
+  return ( <></>)
 }

@@ -9,7 +9,17 @@
   .form-element {
     @apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500;
   }
+
+  select, input[type="text"] {
+  @apply p-[6px] w-full;
 }
+  input[type="number"] {
+  @apply  p-[4px] w-full;
+}
+
+}
+
+
 
 :root {
   --max-width: 1100px;
@@ -117,4 +127,15 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+
+
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    min-width: 6rem;
+  } 
+
+  .rhap_time .rhap_total-time {
+  color: white !important;
 }

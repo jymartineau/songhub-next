@@ -23,8 +23,6 @@ function UserWatcher() {
       if (!user && !isLoading) {
         await fetch('/api/silent-auth', { mode: 'no-cors' });
         if (checkSession) checkSession();
-
-
       }
     })();
   }, [checkSession, user, isLoading]);
