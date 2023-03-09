@@ -8,6 +8,7 @@ import { Category } from '@/types/Category';
 import { MoonLoader } from 'react-spinners';
 import { Tab } from '@headlessui/react';
 import { Society } from '@/types/Society';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 type SpecialtyCategoryType = 'specialty' | 'category';
 interface SpecialtyCRUDProps<T> {
@@ -271,3 +272,5 @@ const ManageEntitiesPage = () => {
 };
 
 export default ManageEntitiesPage;
+
+export const getServerSideProps = withPageAuthRequired  ();

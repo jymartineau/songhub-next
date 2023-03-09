@@ -92,7 +92,7 @@ const GroupComboBox = ({ defaultGroup, items, onGroupChange }: GroupComboBoxProp
             {query.length > 0 && (
               <Combobox.Option value={query}>
                 <div className='relative cursor-default select-none py-2 px-4 text-gray-700'>
-                  Use "{query}"
+                  Use &quot;{query})&quot;
                 </div>
               </Combobox.Option>
             )}
