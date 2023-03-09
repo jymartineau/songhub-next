@@ -6,6 +6,7 @@ import {
   EnvelopeIcon,
   PlusCircleIcon,
   XMarkIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -16,6 +17,7 @@ import {useRouter} from 'next/router'
 
 
 const navigation = [
+  { name: 'Manage', href: '/admin/', icon: BuildingLibraryIcon },
   { name: 'Create Project', href: '/projects/create', icon: PlusCircleIcon },
   { name: 'My Projects', href: '/projects/myprojects', icon: HomeIcon},
   { name: 'Invite', href: '/invite', icon: EnvelopeIcon},
