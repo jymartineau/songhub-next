@@ -1,4 +1,9 @@
 import React from 'react';
+import useSWR from 'swr';
+import { Specialty } from '@/types/Specialty';
+import { fetcher } from '@/utils';
+import { Category } from '@/types/Category';
+import { MoonLoader } from 'react-spinners';
 
 interface CheckboxGroupProps {
   children: React.ReactNode;
@@ -11,7 +16,9 @@ export const CheckboxGroup = ({ children, label }: CheckboxGroupProps) => {
       className='checkbox-group flex flex-col space-y-4'
       aria-labelledby='group_heading'
     >
-      <h2 id='group_heading' className='uppercase'>{label}</h2>
+      <h2 id='group_heading' className='uppercase'>
+        {label}
+      </h2>
       {children}
     </div>
   );
@@ -25,10 +32,19 @@ interface CheckboxProps {
   icon: React.ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
 }
-export const Checkbox = ({ id, name, label, description, icon, onChange }: CheckboxProps) => {
+export const Checkbox = ({
+  id,
+  name,
+  label,
+  description,
+  icon,
+  onChange,
+}: CheckboxProps) => {
   return (
-    <div className='relative flex border rounded'>
-      <div className='bg-gray-300 p-4 flex items-center justify-center'>{icon}</div>
+    <div className='relative flex rounded border'>
+      <div className='flex items-center justify-center bg-gray-300 p-4'>
+        {icon}
+      </div>
       <input
         type='checkbox'
         id={id}
@@ -37,7 +53,7 @@ export const Checkbox = ({ id, name, label, description, icon, onChange }: Check
         onChange={onChange}
       />
       <label className='checkbox-label' htmlFor={id}>
-        <div className='w-60 flex flex-col p-4 cursor-pointer'>
+        <div className='flex w-60 cursor-pointer flex-col p-4'>
           <h3 className='font-bold'>{label}</h3>
           <p className=''>{description}</p>
         </div>
@@ -47,9 +63,15 @@ export const Checkbox = ({ id, name, label, description, icon, onChange }: Check
 };
 
 const SpecialtyPage = () => {
+  const { data: specialties, isLoading: isLoadingSpecialties } = useSWR<
+    Specialty[]
+  >('/api/specialties', fetcher);
+  const { data: categories, isLoading: isLoadingCategories } = useSWR<
+    Category[]
+  >('/api/categories', fetcher);
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('handleCheckboxChange', e.target.name, e.target.checked);
-  }
+  };
   const defaultIcon = (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -68,68 +90,48 @@ const SpecialtyPage = () => {
   );
   return (
     <div className='wrapper'>
-      <div className='flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-20'>
-        <CheckboxGroup label="What's your specialty?">
-          <Checkbox
-            id='song-writer'
-            name='specialty'
-            label='SongWriter'
-            description='song writer description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
+      <div className='flex flex-col space-y-8 sm:flex-row sm:space-y-0 sm:space-x-20'>
+        {isLoadingSpecialties ? (
+          <MoonLoader loading={true} size={20} />
+        ) : (
+          <CheckboxGroup label="What's your specialty?">
+            {specialties &&
+              specialties.map((specialty) => (
+                <Checkbox
+                  key={specialty._id}
+                  id={specialty._id}
+                  name={specialty._id}
+                  label={specialty.name}
+                  description={specialty.description}
+                  icon={defaultIcon}
+                  onChange={handleCheckboxChange}
+                />
+              ))}
+          </CheckboxGroup>
+        )}
 
-          <Checkbox
-            id='composer'
-            name='specialty'
-            label='Composer'
-            description='composer description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
-
-          <Checkbox 
-            id='mastering'
-            name='specialty'
-            label='Mastering'
-            description='composer description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
-        </CheckboxGroup>
-
-        <CheckboxGroup label="What categories do you work in?">
-          <Checkbox
-            id='filmTv'
-            name='categories'
-            label='Film/Tv'
-            description='Film / TV description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
-
-          <Checkbox
-            id='adsTrailer'
-            name='categories'
-            label='Ads & Trailers'
-            description='Ads & Trailers description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
-
-          <Checkbox 
-            id='rock'
-            name='categories'
-            label='Rock'
-            description='Rock description'
-            icon={defaultIcon}
-            onChange={handleCheckboxChange}
-          />
-        </CheckboxGroup>
+        {isLoadingCategories ? (
+          <MoonLoader size={20} />
+        ) : (
+          <CheckboxGroup label='What categories do you work in?'>
+            {categories &&
+              categories.map((category) => (
+                <Checkbox
+                  key={category._id}
+                  id={category._id}
+                  name={category._id}
+                  label={category.name}
+                  description={category.description}
+                  icon={defaultIcon}
+                  onChange={handleCheckboxChange}
+                />
+              ))}
+          </CheckboxGroup>
+        )}
       </div>
 
-      <div className="w-full flex justify-end">
-        <button className="uppercase px-4 py-2 bg-gray-300 mt-6">Finish</button>
+      <div className='flex w-full justify-end'>
+        <button className='mt-6 bg-gray-300 px-4 py-2 uppercase'>Finish</button>
       </div>
     </div>
   );
