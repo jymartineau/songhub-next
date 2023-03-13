@@ -272,7 +272,7 @@ const ProjectForm = () => {
                             </div>
                         </Group>
                     </div>
-                    {/* <div className="flex flex-row w-full gap-4">
+                    <div className="flex flex-row w-full gap-4">
                         <div className="flex flex-col w-full">
 
                             <Group title="ISWC">
@@ -292,7 +292,7 @@ const ProjectForm = () => {
                                 />
                             </Group>
                         </div>
-                    </div> */}
+                    </div>
                     <Group title="Performed by/Artist">
                         <input type="text" placeholder="Performer or Artist..." {...formik.getFieldProps('performedBy')} />
                     </Group>
