@@ -12,7 +12,7 @@ const nextConfig = {
         pathname: '/id/**',
       },
     ],
-    domains: [ 'lh3.googleusercontent.com', 'picsum.photos']
+    domains: [ 'lh3.googleusercontent.com', 'picsum.photos', "freepd.com", "ui-avatars.com"]
   },
   // NOTE: If we want Sass Support
   // sassOptions: {
