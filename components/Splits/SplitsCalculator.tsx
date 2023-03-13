@@ -14,7 +14,7 @@ interface SplitCalculator {
         value: any,
         shouldValidate?: boolean | undefined
     ) => Promise<void> | Promise<FormikErrors<any>>;
-    handleRemove: (id:string) => void;
+    handleRemove: (id: string) => void;
 }
 
 // { writerName:"",

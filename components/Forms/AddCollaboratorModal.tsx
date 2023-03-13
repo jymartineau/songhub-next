@@ -7,26 +7,26 @@ import { Collaborator, } from '@/types'
 import { WRITER_TYPES } from '@/constants'
 import { v4 as uuid } from 'uuid'
 
-const DEFAULT_INITIAL_VALUES =   {
-        id:"",
-        writerName: "",
-        writerEmail: "",
-        writerAffiliation: "",
-        writerType: [],
-        publisher: "",
-        publisherAffiliation: "",
-        territory: "",
-        share: 0,
-      }
+const DEFAULT_INITIAL_VALUES = {
+  id: "",
+  writerName: "",
+  writerEmail: "",
+  writerAffiliation: "",
+  writerType: [],
+  publisher: "",
+  publisherAffiliation: "",
+  territory: "",
+  share: 0,
+}
 
 // eslint-disable-next-line no-unused-vars
-export default function Modal({ open, setOpen, handleAdd, initialValue=undefined }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, handleAdd: (writer: Collaborator) => void, initialValue?:Collaborator }) {
+export default function Modal({ open, setOpen, handleAdd, initialValue = undefined }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, handleAdd: (writer: Collaborator) => void, initialValue?: Collaborator }) {
 
   const formik = useFormik(
     {
       initialValues:
       {
-        id:"",
+        id: "",
         writerName: "",
         writerEmail: "",
         writerAffiliation: "",
@@ -39,9 +39,9 @@ export default function Modal({ open, setOpen, handleAdd, initialValue=undefined
 
       onSubmit: async (v) => {
 
-         if (v.id === "") {
-        v.id = uuid();
-      }
+        if (v.id === "") {
+          v.id = uuid();
+        }
 
         handleAdd(v)
         formik.resetForm();
@@ -56,8 +56,8 @@ export default function Modal({ open, setOpen, handleAdd, initialValue=undefined
     console.log(formik.values)
   }, [formik.values])
 
-    useEffect(() => {
-  
+  useEffect(() => {
+
 
     if (!open) {
       formik.resetForm();
@@ -66,10 +66,10 @@ export default function Modal({ open, setOpen, handleAdd, initialValue=undefined
     return () => {
       formik.resetForm();
     }
-  
+
   }, [])
 
-    useEffect(() => {
+  useEffect(() => {
     console.log('==stem intial value prop in modal', initialValue)
     if (initialValue) {
       console.log('==setting initialValue', initialValue)
@@ -172,7 +172,7 @@ export default function Modal({ open, setOpen, handleAdd, initialValue=undefined
                                 return (
                                   <div key={`${c}-${i}`} className='flex flex-row justify-between w-full pr-3 item-center'>
                                     <label className='capitalize w-[76px] text-lg' htmlFor={c}>{c}</label>
-                                    <input type='checkbox' className='w-4 h-4 my-auto' value={c} name="writerType" onChange={formik.handleChange} checked={formik.values.writerType.includes(c)}/>
+                                    <input type='checkbox' className='w-4 h-4 my-auto' value={c} name="writerType" onChange={formik.handleChange} checked={formik.values.writerType.includes(c)} />
                                   </div>
                                 )
                               })}

@@ -69,7 +69,7 @@ const ProjectForm = () => {
         console.log(formik.values);
     }, [formik, formik.values])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (stemInitialvalues) {
             console.log('stem initial values in form', stemInitialvalues);
             setOpenStemsModal(true);
@@ -78,24 +78,24 @@ const ProjectForm = () => {
             console.log('collab initial values in form', stemInitialvalues);
             setOpenCollabModal(true);
         }
-        
-    },[stemInitialvalues, collabInitialValues])
+
+    }, [stemInitialvalues, collabInitialValues])
 
     // Clean up initial values
-    useEffect(()=>{
+    useEffect(() => {
         if (!openStemsModal && stemInitialvalues) {
             console.log('set stem inital as undefined')
             setStemInitialValues(undefined);
         }
-        if(!openCollabModal && collabInitialValues) {
-             console.log('set collab inital as undefined')
+        if (!openCollabModal && collabInitialValues) {
+            console.log('set collab inital as undefined')
             setCollabInitialValues(undefined);
         }
-    },[openStemsModal, openCollabModal])
+    }, [openStemsModal, openCollabModal])
 
     useEffect(() => {
         console.log('stem initial Values', stemInitialvalues)
-    },[stemInitialvalues])
+    }, [stemInitialvalues])
 
     const handleAltTitleRemove = (i: number) => {
         // Create Shallow Copy
@@ -112,14 +112,14 @@ const ProjectForm = () => {
         if (index > -1) {
             console.log('found match: ', index)
             currentStems[index] = stem
-             await formik.setFieldValue("stemUploads", [...currentStems])
-             return;
+            await formik.setFieldValue("stemUploads", [...currentStems])
+            return;
         }
 
-        await formik.setFieldValue("stemUploads", [...currentStems, stem ])
+        await formik.setFieldValue("stemUploads", [...currentStems, stem])
     }
 
-    const handleAltTitleAdd = (e:any) => {
+    const handleAltTitleAdd = (e: any) => {
         e.preventDefault();
         let currentList = formik.values.workTitleAlts
         formik.setFieldValue("workTitleAlts", [...currentList, formik.values.currentWorkAltTitle]).then(() => {
@@ -128,30 +128,30 @@ const ProjectForm = () => {
 
     }
 
-    const handleCollaboratorAdd = async (writer:Collaborator) => {
+    const handleCollaboratorAdd = async (writer: Collaborator) => {
         let currentSplits = [...formik.values.splits]
 
-             let index = currentSplits.findIndex((s) => s.id === writer.id);
+        let index = currentSplits.findIndex((s) => s.id === writer.id);
 
         if (index > -1) {
             console.log('found match: ', index)
-             currentSplits[index] = writer
-             await formik.setFieldValue("splits", [...currentSplits])
-             return;
+            currentSplits[index] = writer
+            await formik.setFieldValue("splits", [...currentSplits])
+            return;
         }
         await formik.setFieldValue("splits", [...currentSplits, writer])
     }
 
-    const handleRemoveSplit = (id:string) => {
-       let currentSplits = [...formik.values.splits];
-       let index = currentSplits.findIndex(s => s.id === id);
+    const handleRemoveSplit = (id: string) => {
+        let currentSplits = [...formik.values.splits];
+        let index = currentSplits.findIndex(s => s.id === id);
         currentSplits.splice(index, 1);
         formik.setFieldValue("splits", currentSplits);
     }
 
-       const handleRemoveStem = (id:string) => {
-       let currentStem = [...formik.values.stemUploads];
-       let index = currentStem.findIndex(s => s.id === id);
+    const handleRemoveStem = (id: string) => {
+        let currentStem = [...formik.values.stemUploads];
+        let index = currentStem.findIndex(s => s.id === id);
         currentStem.splice(index, 1);
         formik.setFieldValue("stemUploads", currentStem);
     }
@@ -308,10 +308,10 @@ const ProjectForm = () => {
                                     <p className="whitespace-none w-1/4 text-lg">{s.title}</p>
                                     <div className="w-3/4 flex flex-row gap-3">
                                         <AudioPlayer src={s.fileURL} className="!bg-[#333] !border !rounded-md border-gray-700" showSkipControls={false} showJumpControls={true} customAdditionalControls={[]} layout="horizontal-reverse" />
-                                        <button type="button" onClick={()=>{
+                                        <button type="button" onClick={() => {
                                             setStemInitialValues(s)
                                         }}>Edit</button>
-                                        <button type="button" onClick={()=>{
+                                        <button type="button" onClick={() => {
                                             handleRemoveStem(s.id)
                                         }}>Remove</button>
                                     </div>
@@ -331,9 +331,9 @@ const ProjectForm = () => {
                     </Group>
                 </div>
                 <Group title="Splits">
-                    
+
                     <SplitsCalculator splits={formik.values.splits} setFieldValue={formik.setFieldValue} setCollabValue={setCollabInitialValues} handleRemove={handleRemoveSplit} />
-                    <button type="button" className='w-full uppercase text-lg bg-gray-700 py-2 rounded-md' onClick={() => {setOpenCollabModal(true)}}>+ Add Collaborator</button>
+                    <button type="button" className='w-full uppercase text-lg bg-gray-700 py-2 rounded-md' onClick={() => { setOpenCollabModal(true) }}>+ Add Collaborator</button>
 
                 </Group>
 
@@ -356,7 +356,7 @@ const ProjectForm = () => {
 
             </form>
             <StemUploadModal open={openStemsModal} setOpen={setOpenStemsModal} handleAdd={handleAddStem} initialValue={stemInitialvalues} />
-            <AddCollaboratorModal open={openCollabModal}  setOpen={setOpenCollabModal} handleAdd={handleCollaboratorAdd} initialValue={collabInitialValues} />
+            <AddCollaboratorModal open={openCollabModal} setOpen={setOpenCollabModal} handleAdd={handleCollaboratorAdd} initialValue={collabInitialValues} />
         </>
     );
 };

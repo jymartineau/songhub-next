@@ -4,7 +4,7 @@ export interface UploadedFile extends File {
 }
 
 export interface StemUpload {
-  id:string;
+  id: string;
   title: string;
   audio: string;
   desc: string;
@@ -15,7 +15,7 @@ export interface StemUpload {
 }
 
 export interface Collaborator {
-  id:string;
+  id: string;
   writerName: string,
   writerEmail: string,
   writerAffiliation: string,
@@ -26,7 +26,7 @@ export interface Collaborator {
   share: number,
 }
 
-export enum ModalModes  {
+export enum ModalModes {
   VIEW = "VIEW",
   CREATE = "CREATE"
 }
