@@ -22,7 +22,7 @@ interface CheckboxProps {
   name: string;
   label: string;
   description?: string;
-  icon: React.SVGProps<SVGSVGElement>;
+  icon: React.ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
 }
 export const Checkbox = ({ id, name, label, description, icon, onChange }: CheckboxProps) => {
