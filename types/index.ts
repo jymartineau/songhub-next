@@ -4,6 +4,7 @@ export interface UploadedFile extends File {
 }
 
 export interface StemUpload {
+  id:string;
   title: string;
   audio: string;
   desc: string;
@@ -14,6 +15,7 @@ export interface StemUpload {
 }
 
 export interface Collaborator {
+  id:string;
   writerName: string,
   writerEmail: string,
   writerAffiliation: string,

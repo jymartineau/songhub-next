@@ -29,7 +29,7 @@ export default function MediaUpload({
     },
 
     onDrop: (acceptedFiles) => {
-      setFieldValue('media', acceptedFiles[0]);
+      setFieldValue('artwork', acceptedFiles[0]);
       setFile(
         Object.assign(acceptedFiles[0], {
           preview: URL.createObjectURL(acceptedFiles[0]),
@@ -81,7 +81,7 @@ export default function MediaUpload({
           ) : (
             <div className="flex items-center justify-center h-full uppercase">
               <PlusCircleIcon className="h-8 w-8 text-back mr-2" />
-              <p className="h-fit my-auto font-semibold text-white">Add Media</p>
+              <p className="h-fit my-auto font-semibold text-white">Add Artwork</p>
             </div>
           )}
         </div>
@@ -91,7 +91,7 @@ export default function MediaUpload({
           <>
             <div className="h-[10rem] w-[10rem] relative flex justify-center items-center mx-auto">
               <div
-                className="h-8 w-8 top-0 -left-10 cursor-pointer absolute z-40  rounded-md drop-shadow-sm border hover:text-gray-500 hover:text flex hover:border-gray-500"
+                className="h-8 w-8 top-0 -left-10 cursor-pointer absolute z-10  rounded-md drop-shadow-sm border hover:text-gray-500 hover:text flex hover:border-gray-500"
                 onClick={removeMedia}
               >
                 <TrashIcon className="h-6 w-6 z-80  m-auto" aria-label="Remove Media" />

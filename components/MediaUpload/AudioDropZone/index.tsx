@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { UploadedFile } from '@/types';
-import { TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { FormikErrors } from 'formik';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import AudioPlayer from 'react-h5-audio-player';

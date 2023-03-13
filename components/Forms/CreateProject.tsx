@@ -27,8 +27,8 @@ const ProjectForm = () => {
 
     const [openStemsModal, setOpenStemsModal] = useState<boolean>(false);
     const [openCollabModal, setOpenCollabModal] = useState<boolean>(false);
-    const [stemDetails, setStemDetails] = useState<StemUpload | undefined>(undefined);
-    const [collaboratorDetails, setCollaboratorDetails] = useState<Collaborator | undefined>(undefined);
+    const [stemInitialvalues, setStemInitialValues] = useState<StemUpload | undefined>(undefined)
+    const [collabInitialValues, setCollabInitialValues] = useState<Collaborator | undefined>(undefined)
 
     const formik = useFormik({
         initialValues: {
@@ -69,6 +69,34 @@ const ProjectForm = () => {
         console.log(formik.values);
     }, [formik, formik.values])
 
+    useEffect(()=>{
+        if (stemInitialvalues) {
+            console.log('stem initial values in form', stemInitialvalues);
+            setOpenStemsModal(true);
+        }
+        if (collabInitialValues) {
+            console.log('collab initial values in form', stemInitialvalues);
+            setOpenCollabModal(true);
+        }
+        
+    },[stemInitialvalues, collabInitialValues])
+
+    // Clean up initial values
+    useEffect(()=>{
+        if (!openStemsModal && stemInitialvalues) {
+            console.log('set stem inital as undefined')
+            setStemInitialValues(undefined);
+        }
+        if(!openCollabModal && collabInitialValues) {
+             console.log('set collab inital as undefined')
+            setCollabInitialValues(undefined);
+        }
+    },[openStemsModal, openCollabModal])
+
+    useEffect(() => {
+        console.log('stem initial Values', stemInitialvalues)
+    },[stemInitialvalues])
+
     const handleAltTitleRemove = (i: number) => {
         // Create Shallow Copy
         let currentTitles = [...formik.values.workTitleAlts];
@@ -77,7 +105,17 @@ const ProjectForm = () => {
     }
 
     const handleAddStem = async (stem: StemUpload) => {
-        let currentStems = formik.values.stemUploads
+        let currentStems = [...formik.values.stemUploads]
+
+        let index = currentStems.findIndex((s) => s.id === stem.id);
+
+        if (index > -1) {
+            console.log('found match: ', index)
+            currentStems[index] = stem
+             await formik.setFieldValue("stemUploads", [...currentStems])
+             return;
+        }
+
         await formik.setFieldValue("stemUploads", [...currentStems, stem ])
     }
 
@@ -90,9 +128,32 @@ const ProjectForm = () => {
 
     }
 
-    const handleCollaboratorAdd = (writer:Collaborator) => {
-        let currentSplits = formik.values.splits;
-        formik.setFieldValue("splits", [...currentSplits, writer])
+    const handleCollaboratorAdd = async (writer:Collaborator) => {
+        let currentSplits = [...formik.values.splits]
+
+             let index = currentSplits.findIndex((s) => s.id === writer.id);
+
+        if (index > -1) {
+            console.log('found match: ', index)
+             currentSplits[index] = writer
+             await formik.setFieldValue("splits", [...currentSplits])
+             return;
+        }
+        await formik.setFieldValue("splits", [...currentSplits, writer])
+    }
+
+    const handleRemoveSplit = (id:string) => {
+       let currentSplits = [...formik.values.splits];
+       let index = currentSplits.findIndex(s => s.id === id);
+        currentSplits.splice(index, 1);
+        formik.setFieldValue("splits", currentSplits);
+    }
+
+       const handleRemoveStem = (id:string) => {
+       let currentStem = [...formik.values.stemUploads];
+       let index = currentStem.findIndex(s => s.id === id);
+        currentStem.splice(index, 1);
+        formik.setFieldValue("stemUploads", currentStem);
     }
 
     return (
@@ -103,7 +164,7 @@ const ProjectForm = () => {
                     <Group title="status">
                         <select
                             {...formik.getFieldProps('status')}
-
+                            onChange={formik.handleChange}
                         >
                             <>
                                 {
@@ -172,7 +233,7 @@ const ProjectForm = () => {
                             {...formik.getFieldProps("workType")}
                         >
                             {TEST_workTypeS.map(({ id, workType }) => (
-                                <option key={id} value={id}>
+                                <option key={id} value={workType}>
                                     {workType}
                                 </option>
                             ))}
@@ -233,7 +294,7 @@ const ProjectForm = () => {
                         </div>
                     </div> */}
                     <Group title="Performed by/Artist">
-                        <input type="text" placeholder="Performer or Artist..." />
+                        <input type="text" placeholder="Performer or Artist..." {...formik.getFieldProps('performedBy')} />
                     </Group>
                 </div>
 
@@ -245,9 +306,14 @@ const ProjectForm = () => {
 
                                 <div className="flex items-center" key={`${s.title}-${i}`}>
                                     <p className="whitespace-none w-1/4 text-lg">{s.title}</p>
-                                    <div className="w-3/4">
+                                    <div className="w-3/4 flex flex-row gap-3">
                                         <AudioPlayer src={s.fileURL} className="!bg-[#333] !border !rounded-md border-gray-700" showSkipControls={false} showJumpControls={true} customAdditionalControls={[]} layout="horizontal-reverse" />
-
+                                        <button type="button" onClick={()=>{
+                                            setStemInitialValues(s)
+                                        }}>Edit</button>
+                                        <button type="button" onClick={()=>{
+                                            handleRemoveStem(s.id)
+                                        }}>Remove</button>
                                     </div>
 
                                 </div>
@@ -266,7 +332,7 @@ const ProjectForm = () => {
                 </div>
                 <Group title="Splits">
                     
-                    <SplitsCalculator splits={formik.values.splits} setFieldValue={formik.setFieldValue} />
+                    <SplitsCalculator splits={formik.values.splits} setFieldValue={formik.setFieldValue} setCollabValue={setCollabInitialValues} handleRemove={handleRemoveSplit} />
                     <button type="button" className='w-full uppercase text-lg bg-gray-700 py-2 rounded-md' onClick={() => {setOpenCollabModal(true)}}>+ Add Collaborator</button>
 
                 </Group>
@@ -277,6 +343,7 @@ const ProjectForm = () => {
                         type="button"
                         disabled={formik.isSubmitting}
                         className="d-flex align-items-center"
+                        onClick={formik.submitForm}
                     >
                         <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
                         Save Song Project
@@ -288,8 +355,8 @@ const ProjectForm = () => {
 
 
             </form>
-            <StemUploadModal open={openStemsModal} setOpen={setOpenStemsModal} handleAdd={handleAddStem} />
-            <AddCollaboratorModal open={openCollabModal}  setOpen={setOpenCollabModal} handleAdd={handleCollaboratorAdd} />
+            <StemUploadModal open={openStemsModal} setOpen={setOpenStemsModal} handleAdd={handleAddStem} initialValue={stemInitialvalues} />
+            <AddCollaboratorModal open={openCollabModal}  setOpen={setOpenCollabModal} handleAdd={handleCollaboratorAdd} initialValue={collabInitialValues} />
         </>
     );
 };
