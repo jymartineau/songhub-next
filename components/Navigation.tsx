@@ -6,6 +6,7 @@ import {
   EnvelopeIcon,
   PlusCircleIcon,
   XMarkIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -16,6 +17,7 @@ import {useRouter} from 'next/router'
 
 
 const navigation = [
+  { name: 'Manage', href: '/admin/', icon: BuildingLibraryIcon },
   { name: 'Create Project', href: '/projects/create', icon: PlusCircleIcon },
   { name: 'My Projects', href: '/projects/myprojects', icon: HomeIcon},
   { name: 'Invite', href: '/invite', icon: EnvelopeIcon},
@@ -27,12 +29,13 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
   const { user, isLoading } = useUser();
   const router = useRouter();
   if (isLoading) {
+    return (
     <div>
       <PulseLoader color={'#037ae0'} loading={true} size={15} />
     </div>
+    );
   }
 
-  if (user && !isLoading) {
     return (
       <>
         {/*
@@ -43,7 +46,7 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
         <body class="h-full">
         ```
       */}
-        <div>
+        {user && !isLoading ? <div>
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog as="div" className="relative z-40 lg:hidden" onClose={setSidebarOpen}>
               <Transition.Child
@@ -214,10 +217,8 @@ export default function SideNavigation({ children }: { children: ReactNode }) {
               {children}
             </main>
           </div>
-        </div>
+        </div> : null}
       </>
     )
-  }
-
 
 }
